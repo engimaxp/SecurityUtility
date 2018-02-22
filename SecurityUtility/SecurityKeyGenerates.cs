@@ -9,6 +9,7 @@ using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,6 +53,37 @@ namespace SecurityUtility
                 RSAPublicKeyJava = Convert.ToBase64String(publicInfoByte),
                 RSAPrivateKeyJava = Convert.ToBase64String(privateInfoByte)
             };
+        }
+        public static SecurityKeyPair GetSecurityKeyPair()
+        {
+            int count = 3;
+            bool ckeck = false;
+            SecurityKeyPair pair = null;
+            while (count > 0)
+            {
+                pair = Generate();
+                ckeck = TestKeyPair(pair);
+                if(ckeck)break;
+                count--;
+            }
+            return pair;
+        }
+
+
+        public static bool TestKeyPair(SecurityKeyPair pair)
+        {
+            if (pair == null) return false;
+            try
+            {
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                string privateKeyNet = pair.RSAPrivateKeyJava.RSAPrivateKeyJava2DotNet();
+                rsa.FromXmlString(privateKeyNet);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace SecurityUtility
         /// <returns></returns>
         public static string RSADecrypt(string privateKeyNet, string data, string encoding = ENCODING_STRING)
         {
+            RSACryptoServiceProvider.UseMachineKeyStore = true;
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             byte[] cipherbytes;
             rsa.FromXmlString(privateKeyNet);
